@@ -1,9 +1,9 @@
 from sys import argv, exit
-from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QMessageBox, QWidget
 from PyQt5.Qt import Qt
 import sqlite3
 from os.path import isfile
+import Ui_addEditCoffeeForm, Ui_main
 
 
 class DbBasicFunctions(object):
@@ -33,11 +33,11 @@ class DbBasicFunctions(object):
         self.db.commit()
 
 
-class MainWindow(QMainWindow, DbBasicFunctions):
+class MainWindow(QMainWindow, Ui_main.Ui_MainWindow, DbBasicFunctions):
     def __init__(self):
         super().__init__()
-        if isfile("./coffee.sqlite"):
-            self.db = sqlite3.connect("coffee.sqlite")
+        if isfile("./data/coffee.sqlite"):
+            self.db = sqlite3.connect("./data/coffee.sqlite")
         else:
             self.show_messagebox("Database error!")
             exit()
@@ -46,7 +46,8 @@ class MainWindow(QMainWindow, DbBasicFunctions):
         self.update_table()
 
     def initUi(self):
-        uic.loadUi("main.ui", self)
+        self.setupUi(self)
+        self.retranslateUi(self)
         self.action_exit.triggered.connect(exit)
         self.pushButton_update.clicked.connect(self.update_table)
         self.pushButton_add.clicked.connect(self.open_add_form)
@@ -109,7 +110,7 @@ class MainWindow(QMainWindow, DbBasicFunctions):
         self.add_edit_form.show()
 
 
-class AddEditCoffeeForm(QWidget, DbBasicFunctions):
+class AddEditCoffeeForm(QWidget, Ui_addEditCoffeeForm.Ui_Form, DbBasicFunctions):
     def __init__(self, main_form, db):
         super().__init__()
         self.main_form = main_form
@@ -117,7 +118,8 @@ class AddEditCoffeeForm(QWidget, DbBasicFunctions):
         self.initUi()
 
     def initUi(self):
-        uic.loadUi("addEditCoffeeForm.ui", self)
+        self.setupUi(self)
+        self.retranslateUi(self)
         self.pushButton_save.clicked.connect(self.save)
         self.pushButton_cancel.clicked.connect(self.hide)
 
